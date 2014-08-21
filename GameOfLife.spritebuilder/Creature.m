@@ -14,6 +14,7 @@
     self = [super initWithImageNamed:@"GameOfLifeAssets/Assets/resources-auto/bubble.png"];
     
     if (self) {
+        printf("Image found");
         self.isAlive = NO;
     }
     
