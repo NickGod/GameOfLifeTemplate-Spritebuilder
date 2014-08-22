@@ -18,6 +18,95 @@ static const int GRID_COLUMNS = 10;
     float _cellHeight;
 }
 
+- (void)evolveStep
+{
+    //update each Creature's neighbor count
+    [self countNeighbors];
+    
+    //update each Creature's state
+    [self updateCreatures];
+    
+    //update the generation so the label's text will display the correct generation
+    _generation++;
+}
+
+- (void)countNeighbors
+{
+    // iterate through the rows
+    // note that NSArray has a method 'count' that will return the number of elements in the array
+    for (int i = 0; i < [_gridArray count]; i++)
+    {
+        // iterate through all the columns for a given row
+        for (int j = 0; j < [_gridArray[i] count]; j++)
+        {
+            // access the creature in the cell that corresponds to the current row/column
+            Creature *currentCreature = _gridArray[i][j];
+            
+            // remember that every creature has a 'livingNeighbors' property that we created earlier
+            currentCreature.livingNeighbors = 0;
+            
+            // now examine every cell around the current one
+            
+            // go through the row on top of the current cell, the row the cell is in, and the row past the current cell
+            for (int x = (i-1); x <= (i+1); x++)
+            {
+                // go through the column to the left of the current cell, the column the cell is in, and the column to the right of the current cell
+                for (int y = (j-1); y <= (j+1); y++)
+                {
+                    // check that the cell we're checking isn't off the screen
+                    BOOL isIndexValid;
+                    isIndexValid = [self isIndexValidForX:x andY:y];
+                    
+                    // skip over all cells that are off screen AND the cell that contains the creature we are currently updating
+                    if (!((x == i) && (y == j)) && isIndexValid)
+                    {
+                        Creature *neighbor = _gridArray[x][y];
+                        if (neighbor.isAlive)
+                        {
+                            currentCreature.livingNeighbors += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+- (BOOL)isIndexValidForX:(int)x andY:(int)y
+{
+    BOOL isIndexValid = YES;
+    if(x < 0 || y < 0 || x >= GRID_ROWS || y >= GRID_COLUMNS)
+    {
+        isIndexValid = NO;
+    }
+    return isIndexValid;
+}
+
+- (void)updateCreatures
+{
+    /*
+     Now it's your turn to write updateCreatures. Declare the method in Grid.h, create it in Grid.m. You will need to create a double-nested for-loop like we did in countNeighbors to access every creature in the Grid. Look over the code in countNeighbors if you need a refresher on how to do that.
+     
+     Next you need to create an if/else if statement. In the if statement, check if the Creature's livingNeighbors property is set to 3. If it is, that means it has 3 live neighbors so you want to set its isAlive property to TRUE. In the else if you want to check if the Creature has less than or equal to 1 living neighbors or more than or equal to 4. If either are true, set the Creature's isAlive property to FALSE.
+     */
+    
+    for (int i = 0; i < [_gridArray count]; i++)
+    {
+        for (int j = 0; j < [_gridArray[i] count]; j++)
+        {
+            Creature* currentCreature = _gridArray[i][j];  //access the current creature
+            
+            if (currentCreature.livingNeighbors == 3)
+                currentCreature.isAlive = TRUE;
+            else if (currentCreature.livingNeighbors <= 1 || currentCreature.livingNeighbors >= 4)
+                currentCreature.isAlive = FALSE;
+        }
+    }
+     
+     
+    
+}
+
 - (void)onEnter
 {
     [super onEnter];
