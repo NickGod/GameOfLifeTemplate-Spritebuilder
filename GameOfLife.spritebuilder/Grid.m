@@ -89,6 +89,7 @@ static const int GRID_COLUMNS = 10;
      
      Next you need to create an if/else if statement. In the if statement, check if the Creature's livingNeighbors property is set to 3. If it is, that means it has 3 live neighbors so you want to set its isAlive property to TRUE. In the else if you want to check if the Creature has less than or equal to 1 living neighbors or more than or equal to 4. If either are true, set the Creature's isAlive property to FALSE.
      */
+    int numAlive = 0;
     
     for (int i = 0; i < [_gridArray count]; i++)
     {
@@ -100,10 +101,14 @@ static const int GRID_COLUMNS = 10;
                 currentCreature.isAlive = TRUE;
             else if (currentCreature.livingNeighbors <= 1 || currentCreature.livingNeighbors >= 4)
                 currentCreature.isAlive = FALSE;
+            
+            if (currentCreature.isAlive == TRUE)
+                numAlive += 1;
+            
         }
     }
      
-     
+    _totalAlive = numAlive; 
     
 }
 
